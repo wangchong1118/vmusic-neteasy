@@ -10,6 +10,19 @@ no-wrap()
   overflow: hidden
   white-space: nowrap
 
+// 底部添加下划线
+bottom-line($color)
+  position: relative
+  &:after
+    content: ''
+    position: absolute
+    left: 0
+    right: 0
+    bottom: 0
+    height: 1px
+    transform: scaleY(0.3)
+    background: $color
+
 // 扩展点击区域
 extend-click()
   position: relative
