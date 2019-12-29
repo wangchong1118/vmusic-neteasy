@@ -10,8 +10,16 @@
 import MHeader from 'components/m-header/m-header'
 import Tab from 'components/tab/tab'
 
+import {getRecommend} from 'api/recommend'
+// import {}
+
 export default {
   name: 'App',
+  created(){
+    getRecommend().then(res => {
+      console.log(res)
+    })
+  },
   components: {
     MHeader,
     Tab
