@@ -1,36 +1,29 @@
 <template>
   <div id="app">
-      <m-header></m-header>
-      <tab></tab>
-      <router-view></router-view>
+    <m-header></m-header>
+    <tab></tab>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import MHeader from 'components/m-header/m-header'
-import Tab from 'components/tab/tab'
-
-import {getRecommend} from 'api/recommend'
-// import {}
+import MHeader from "components/m-header/m-header";
+import Tab from "components/tab/tab";
 
 export default {
-  name: 'App',
-  created(){
-    getRecommend().then(res => {
-      console.log(res)
-    })
-  },
+  name: "App",
   components: {
     MHeader,
     Tab
   }
-}
+};
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-    @import "~common/stylus/variable"
+@import '~common/stylus/variable';
 
-    #app
-      color: $color-text
-      background: $color-background-body
+#app {
+  color: $color-text;
+  background: $color-background-body;
+}
 </style>
