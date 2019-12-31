@@ -6,7 +6,7 @@
           <slider>
             <div v-for="(item, index) in bannerList" :key="index">
               <a :href="item.url">
-                <img :src="item.imageUrl" :alt="item.typeTitle">
+                <img class="needsclick" :src="item.imageUrl" :alt="item.typeTitle">
               </a>
             </div>
           </slider>
@@ -16,7 +16,7 @@
           <ul>
             <li v-for="item in recommendSongList" :key="item.id" class="item">
               <div class="icon">
-                <img @load="_loadImg" :src="item.picUrl" width="60" height="60" :alt="item.name">
+                <img @load="_loadImg" v-lazy="item.picUrl" width="60" height="60" :alt="item.name">
               </div>
               <div class="text">
                 <h2 class="name">{{item.name}}</h2>
@@ -26,6 +26,9 @@
           </ul>
         </div>
       </div>
+      <div class="loading-container" v-show="!recommendSongList.length">
+        <loading></loading>
+      </div>
     </scroll>
   </div>
 </template>
@@ -33,6 +36,7 @@
 <script>
 import { getBanner, getRecommendSongList } from "api/index";
 
+import Loading from "base/loading/loading";
 import Scroll from "base/scroll/scroll";
 import Slider from "base/slider/slider";
 
@@ -62,7 +66,8 @@ export default {
   },
   components: {
     Slider,
-    Scroll
+    Scroll,
+    Loading
   }
 };
 </script>
