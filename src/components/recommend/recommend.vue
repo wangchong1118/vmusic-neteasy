@@ -1,42 +1,68 @@
 <template>
   <div class="recommend">
-    <div class="recommend-content">
-      <div v-if="bannerList.length" class="slider-wrapper">
-        <slider>
-          <div v-for="(item, index) in bannerList" :key="index">
-            <a :href="item.url">
-              <img :src="item.imageUrl" :alt="item.typeTitle">
-            </a>
-          </div>
-        </slider>
+    <scroll ref="scroll" class="recommend-content" :data="recommendSongList">
+      <div>
+        <div v-if="bannerList.length" class="slider-wrapper">
+          <slider>
+            <div v-for="(item, index) in bannerList" :key="index">
+              <a :href="item.url">
+                <img :src="item.imageUrl" :alt="item.typeTitle">
+              </a>
+            </div>
+          </slider>
+        </div>
+        <div class="recommend-list">
+          <h1 class="list-title">热门歌单推荐</h1>
+          <ul>
+            <li v-for="item in recommendSongList" :key="item.id" class="item">
+              <div class="icon">
+                <img @load="_loadImg" :src="item.picUrl" width="60" height="60" :alt="item.name">
+              </div>
+              <div class="text">
+                <h2 class="name">{{item.name}}</h2>
+                <p class="desc">{{item.copywriter}}</p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="recommend-list">
-        <h1 class="list-title">热门歌单推荐</h1>
-        <ul></ul>
-      </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
 <script>
-import { getBanner } from "api/index";
+import { getBanner, getRecommendSongList } from "api/index";
 
+import Scroll from "base/scroll/scroll";
 import Slider from "base/slider/slider";
 
 export default {
   name: "Recommend",
   data() {
     return {
-      bannerList: []
+      bannerList: [],
+      recommendSongList: []
     };
   },
   created() {
     getBanner().then(res => {
       this.bannerList = res;
     });
+    getRecommendSongList().then(res => {
+      this.recommendSongList = res;
+    });
+  },
+  methods: {
+    _loadImg() {
+      if (!this.checkLoaded) {
+        this.$refs.scroll.refresh();
+        this.checkLoaded = true;
+      }
+    }
   },
   components: {
-    Slider
+    Slider,
+    Scroll
   }
 };
 </script>
@@ -65,7 +91,7 @@ export default {
         height: 65px;
         line-height: 65px;
         text-align: center;
-        font-size: $font-size-medium;
+        font-size: $font-size-medium-x;
         color: $color-theme;
       }
 
