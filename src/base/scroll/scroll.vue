@@ -1,7 +1,7 @@
 <template>
-    <div ref="wrapper">
-        <slot></slot>
-    </div>
+  <div ref="wrapper">
+    <slot></slot>
+  </div>
 </template>
 
 <script>
@@ -21,6 +21,10 @@ export default {
     data: {
       type: Array,
       default: null
+    },
+    listenScroll: {
+      type: Boolean,
+      default: false
     }
   },
   mounted() {
@@ -37,6 +41,13 @@ export default {
         probeType: this.probeType,
         click: this.click
       });
+
+      if(this.listenScroll){
+        let _this = this;
+        this.scroll.on('scroll', (pos) => {
+          _this.$emit('scroll', pos);
+        })
+      }
     },
     enable() {
       this.scroll && this.scroll.enable();
@@ -46,6 +57,12 @@ export default {
     },
     refresh() {
       this.scroll && this.scroll.refresh();
+    },
+    scrollTo() {
+      this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
+    },
+    scrollToElement() {
+      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
     }
   },
   watch: {
