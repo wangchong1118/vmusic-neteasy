@@ -1,14 +1,15 @@
 <template>
   <div class="singer">
-    <list-view :data="singerList"></list-view>
+    <list-view @select="selectSinger" :data="singerList"></list-view>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
 import { getSingerList } from "api/index";
 import { getFirstLetter } from "common/js/util";
-
 import ListView from "base/listview/listview";
+import {mapMutations} from 'vuex';
 
 export default {
   name: "Singer",
@@ -27,6 +28,12 @@ export default {
     ListView
   },
   methods: {
+    selectSinger(singer){
+      this.$router.push({
+        path: '/singer/' + singer.id
+      });
+      this.setSinger(singer);
+    },
     _addFirstLetter(list) {
       return list.map(item => {
         return {
@@ -78,7 +85,10 @@ export default {
         return a.title.charCodeAt(0) - b.title.charCodeAt(0);
       });
       return hot.concat(res);
-    }
+    },
+    ...mapMutations({
+      setSinger: 'SET_SINGER'
+    })
   }
 };
 </script>
