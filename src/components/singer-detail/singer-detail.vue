@@ -1,8 +1,6 @@
 <template>
     <transition name="slide" appear>
-        <div class="singer-detail">
-            歌手详情
-        </div>
+        <music-list :songs="songs" :title="singer.name" :bgImage="singer.avatar"></music-list>
     </transition>
 </template>
 
@@ -10,6 +8,7 @@
     import {mapGetters} from 'vuex'
     import {getSingerInfo, getSongInfo} from 'api/index'
     import {createSong} from 'common/js/song'
+    import MusicList from 'components/music-list/music-list'
 
     export default {
         data(){
@@ -29,7 +28,6 @@
             };
             getSingerInfo(this.singer.id).then(res => {
                 this.songs = this._formatSongs(res.hotSongs);
-                console.log(this.songs);
             })
         },
         methods: {
@@ -43,22 +41,14 @@
                 })
                 return res;
             }
+        },
+        components: {
+            MusicList
         }
     }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
-@import "~common/stylus/variable"
-
-.singer-detail
-    position: fixed
-    z-index: 100
-    top: 0
-    left: 0
-    right: 0
-    bottom: 0
-    background: $color-background-body
-
 .slide-enter-active, .slide-leave-active
     transition: all .5s
 .slide-enter, .slide-leave-to
