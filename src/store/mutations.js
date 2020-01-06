@@ -11,10 +11,10 @@ const mutations = {
       state.fullScreen = flag;
     },
     [types.SET_PLAYLIST](state, list) {
-      state.playlist = list;
+      state.playlist = Object.assign([], list);
     },
-    [types.SET_SEQUENCE_LSIT](state, list) {
-      state.sequenceList = list;
+    [types.SET_SEQUENCE_LIST](state, list) {
+      state.sequenceList = Object.assign([], list);
     },
     [types.SET_PLAY_MODE](state, mode) {
       state.mode = mode;

@@ -110,7 +110,7 @@
             this.selectPlay({
               list: this.songs,
               index
-            });
+            })
           },
           ...mapActions([
             'selectPlay'

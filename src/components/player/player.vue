@@ -1,10 +1,6 @@
 <template>
     <div class="player" v-show="playlist.length>0">
-        <transition name="normal" 
-            @enter="enter"
-            @after-enter="afterEnter"
-            @leave="leave"
-            @after-leave="afterLeave">
+        <transition name="normal" @enter="enter" @after-enter="afterEnter" @leave="leave" @after-leave="afterLeave">
             <div class="normal-player" v-show="fullScreen">
                 <div class="background">
                     <img :src="currentSong.image" width="100%" height="100%">
@@ -88,6 +84,8 @@
             },
             enter(el, done){
                 const {x, y, scale} = this._getPosAndScale()
+                
+                console.log(x, y, scale, transform)
                 let animation = {
                     0: {
                         transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`
@@ -102,10 +100,10 @@
 
                 animations.registerAnimation({
                     name: 'move',
-                    animaton,
+                    animation,
                     presets: {
-                        duration: 2000,
-                        easing: 'line'
+                        duration: 500,
+                        easing: 'linear'
                     }
                 })
 
@@ -130,7 +128,7 @@
                 const paddingLeft = 40
                 const paddingBottom = 30
                 const paddingTop = 140
-                const windth = window.innerWidth * 0.7
+                const width = window.innerWidth * 0.7
                 const scale = targetWidth / width
                 const x = -(window.innerWidth/2 - paddingLeft)
                 const y = window.innerHeight - paddingTop - width/2 - paddingBottom
