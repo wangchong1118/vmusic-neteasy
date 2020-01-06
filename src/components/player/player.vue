@@ -15,25 +15,32 @@
                 <div class="middle">
                     <div class="middle-l">
                         <div class="cd-wrapper" ref="cdWrapper">
-                            <div class="cd">
+                            <div class="cd" :class="cdCls">
                                 <img :src="currentSong.image" class="image">
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="bottom">
+                    <div class="progress-wrapper">
+                      <span class="time time-l">{{formatTime(currentTime)}}</span>
+                      <div class="progress-bar-wrapper">
+                        <progress-bar :percent="percent" @percentChange="onProgressBarChange"></progress-bar>
+                      </div>
+                      <span class="time time-r">{{formatTime(currentSong.duration)}}</span>
+                    </div>
                     <div class="operators">
                         <div class="icon i-left">
                             <i class="icon-sequence"></i>
                         </div>
-                        <div class="icon i-left">
-                            <i class="icon-prev"></i>
+                        <div class="icon i-left" :class="disableCls">
+                            <i @click="prev" class="icon-prev"></i>
                         </div>
-                        <div class="icon i-center">
-                            <i class="icon-play"></i>
+                        <div class="icon i-center" :class="disableCls">
+                            <i @click="togglePlaying" :class="playIcon"></i>
                         </div>
-                        <div class="icon i-right">
-                            <i class="icon-next"></i>
+                        <div class="icon i-right" :class="disableCls">
+                            <i @click="next" class="icon-next"></i>
                         </div>
                         <div class="icon i-right">
                             <i class="icon-not-favorite"></i>
@@ -45,18 +52,23 @@
         <transition name="mini">
             <div @click="open" class="mini-player" v-show="!fullScreen">
                 <div class="icon">
-                    <img :src="currentSong.image" width="40" height="40">
+                    <img :class="cdCls" :src="currentSong.image" width="40" height="40">
                 </div>
                 <div class="text">
                     <h2 class="name" v-html="currentSong.name"></h2>
                     <p class="desc" v-html="currentSong.singer"></p>
                 </div>
-                <div class="control"></div>
+                <div class="control">
+                    <progress-circle :radius="radius" :percent="percent">
+                      <i @click.stop="togglePlaying" class="icon-mini" :class="miniPlayIcon"></i>
+                    </progress-circle>
+                </div>
                 <div class="control">
                     <i class="icon-playlist"></i>
                 </div>
             </div>
         </transition>
+        <audio ref="audio" :src="currentSong.url" @timeupdate="updateTime" @canplay="ready" @error="error"></audio>
     </div>
 </template>
 
@@ -64,28 +76,95 @@
     import {mapGetters, mapMutations} from 'vuex';
     import animations from 'create-keyframe-animation';
     import {prefixStyle} from 'common/js/dom'
+    import ProgressBar from 'base/progress-bar/progress-bar'
+    import ProgressCircle from 'base/progress-circle/progress-circle'
 
     const transform = prefixStyle('transform')
 
     export default {
+        data(){
+          return {
+            songReady: false,
+            currentTime: 0,
+            radius: 32
+          }
+        },
         computed: {
+            cdCls(){
+              return this.playing ? 'play' : 'play pause';
+            },
+            playIcon(){
+              return this.playing ? 'icon-pause' : 'icon-play';
+            },
+            miniPlayIcon(){
+              return this.playing ? 'icon-pause-mini' : 'icon-play-mini';
+            },
+            disableCls(){
+              return this.songReady ? '' : 'disable';
+            },
+            percent(){
+              return this.currentTime / this.currentSong.duration
+            },
             ...mapGetters([
                 'fullScreen',
                 'playlist',
                 'currentSong',
+                'playing',
+                'currentIndex'
             ])
         },
+        components: {
+          ProgressBar,
+          ProgressCircle
+        },
         methods: {
+            togglePlaying(){
+              this.setPlayingState(!this.playing);
+            },
             back(){
                this.setFullScreen(false)
             },
             open(){
                this.setFullScreen(true)
             },
+            prev(){
+              if(!this.songReady){
+                return
+              }
+              let index = this.currentIndex - 1;
+              if(index === -1){
+                index = this.playlist.length - 1
+              }
+              this.setCurrentIndex(index);
+              if(!this.playing){
+                this.togglePlaying()
+              }
+              this.songReady = false;
+              console.log(index)
+            },
+            next(){
+              if(!this.songReady){
+                return
+              }
+              let index = this.currentIndex + 1;
+              if(index === this.playlist.length){
+                index = 0
+              }
+              this.setCurrentIndex(index);
+              if(!this.playing){
+                this.togglePlaying()
+              }
+              this.songReady = false;
+            },
+            ready(){
+              this.songReady = true
+            },
+            error(){
+              this.songReady = true
+            },
             enter(el, done){
                 const {x, y, scale} = this._getPosAndScale()
-                
-                console.log(x, y, scale, transform)
+
                 let animation = {
                     0: {
                         transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`
@@ -123,6 +202,30 @@
                 this.$refs.cdWrapper.style.transition = ''
                 this.$refs.cdWrapper.style[transform] = ''
             },
+            updateTime(e){
+              this.currentTime = e.target.currentTime
+            },
+            formatTime(interval){
+              interval = interval | 0; //此处是将时间戳向下取整，等价于 Math.floor
+              const minute = interval / 1000 / 60 | 0;
+              const second = this._pad(interval % 60);
+              return `${minute}:${second}`;
+            },
+            onProgressBarChange(percent){
+              this.$refs.audio.currentTime = this.currentSong.duration * percent / 1000
+              if(!this.playing){
+                this.togglePlaying()
+              }
+              console.log(percent)
+            },
+            _pad(num, n=2){
+              let len = num.toString().length
+              while(len<n){
+                num = '0' + num
+                len++
+              }
+              return num
+            },
             _getPosAndScale(){
                 const targetWidth = 40
                 const paddingLeft = 40
@@ -137,8 +240,23 @@
                 }
             },
             ...mapMutations({
-                setFullScreen: 'SET_FULLSCREEN'
+                setFullScreen: 'SET_FULLSCREEN',
+                setPlayingState: 'SET_PLAYING_STATE',
+                setCurrentIndex: 'SET_CURRENT_INDEX'
             })
+        },
+        watch: {
+          currentSong(){
+            this.$nextTick(() => {
+              this.$refs.audio.play();
+            })
+          },
+          playing(newPlaying){
+            this.$nextTick(() => {
+              const audio = this.$refs.audio
+              newPlaying ? audio.play() : audio.pause();
+            })
+          }
         }
     }
 </script>
@@ -147,6 +265,8 @@
   @import "~common/stylus/variable"
   @import "~common/stylus/mixin"
 
+  *
+    touch-action: none;
   .player
     .normal-player
       position: fixed
@@ -261,7 +381,7 @@
                 color: $color-text
       .bottom
         position: absolute
-        bottom: 112px
+        bottom: 64px
         width: 100%
         .dot-wrapper
           text-align: center
@@ -283,9 +403,9 @@
           align-items: center
           width: 80%
           margin: 0px auto
-          padding: 10px 0
+          padding: 20px 0
           .time
-            color: $color-text
+            color: $color-white
             font-size: $font-size-small
             flex: 0 0 30px
             line-height: 30px
@@ -301,9 +421,9 @@
           align-items: center
           .icon
             flex: 1
-            color: $color-white
+            color: $color-theme
             &.disable
-              color: $color-theme-d
+              color: $color-white
             i
               font-size: 30px
           .i-left
@@ -373,7 +493,7 @@
         padding: 0 10px
         .icon-play-mini, .icon-pause-mini, .icon-playlist
           font-size: 30px
-          color: $color-theme-d
+          color: $color-theme
         .icon-mini
           font-size: 32px
           position: absolute
