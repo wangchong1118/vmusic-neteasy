@@ -52,3 +52,13 @@ export function getSongInfo(songId) {
     }
   })
 }
+
+// 获取歌曲歌词接口函数
+export function getSongLyric(songId) {
+  const url = "/api/lyric?id=" + songId;
+  return axios.get(url).then(res => {
+    if (res.status == ERR_OK && res.data.code == ERR_OK) {
+      return res.data;
+    }
+  })
+}

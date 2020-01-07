@@ -20,6 +20,13 @@
                             </div>
                         </div>
                     </div>
+                    <scroll class="middle-r" ref="lyricList" :data="currentLyric && currentLyric.lines">
+                      <div class="lyric-wrapper">
+                        <div v-if="currentLyric">
+                          <p ref="lyricLine" class="text" :class="{'current': currentLineNum === index}" v-for="(line, index) in currentLyric.lines" :key="index">{{line.txt}}</p>
+                        </div>
+                      </div>
+                    </scroll>
                 </div>
                 <div class="bottom">
                     <div class="progress-wrapper">
@@ -73,13 +80,16 @@
 </template>
 
 <script>
-    import {mapGetters, mapMutations} from 'vuex';
-    import animations from 'create-keyframe-animation';
+    import {getSongLyric} from 'api/index'
+    import {mapGetters, mapMutations} from 'vuex'
+    import animations from 'create-keyframe-animation'
     import {prefixStyle} from 'common/js/dom'
     import {playMode} from 'common/js/config'
     import {shuffle} from 'common/js/util'
+    import Scroll from 'base/scroll/scroll'
     import ProgressBar from 'base/progress-bar/progress-bar'
     import ProgressCircle from 'base/progress-circle/progress-circle'
+    import Lyric from 'lyric-parser'
 
     const transform = prefixStyle('transform')
 
@@ -88,7 +98,9 @@
           return {
             songReady: false,
             currentTime: 0,
-            radius: 32
+            radius: 32,
+            currentLyric: null,
+            currentLineNum: 0
           }
         },
         computed: {
@@ -122,7 +134,8 @@
         },
         components: {
           ProgressBar,
-          ProgressCircle
+          ProgressCircle,
+          Scroll
         },
         methods: {
             togglePlaying(){
@@ -275,6 +288,15 @@
                     x, y, scale
                 }
             },
+            _handleLyric({lineNum, txt}){
+              this.currentLineNum = lineNum
+              if(lineNum > 6){
+                let lineEl = this.$refs.lyricLine[lineNum - 6]
+                this.$refs.lyricList.scrollToElement(lineEl, 1000)
+              }else{
+                this.$refs.lyricList.scrollTo(0, 0, 1000)
+              }
+            },
             ...mapMutations({
                 setFullScreen: 'SET_FULLSCREEN',
                 setPlayingState: 'SET_PLAYING_STATE',
@@ -290,6 +312,12 @@
             }
             this.$nextTick(() => {
               this.$refs.audio.play();
+              getSongLyric(this.currentSong.id).then(res => {
+                this.currentLyric = new Lyric(res.lrc.lyric, this._handleLyric)
+                if(this.playing){
+                  this.currentLyric.play()
+                }
+              })
             })
           },
           playing(newPlaying){
@@ -416,10 +444,10 @@
             text-align: center
             .text
               line-height: 32px
-              color: $color-text-l
+              color: $color-white
               font-size: $font-size-medium
               &.current
-                color: $color-text
+                color: $color-theme
       .bottom
         position: absolute
         bottom: 56px
