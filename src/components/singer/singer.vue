@@ -1,6 +1,6 @@
 <template>
-  <div class="singer">
-    <list-view @select="selectSinger" :data="singerList"></list-view>
+  <div class="singer" ref="singer">
+    <list-view @select="selectSinger" :data="singerList" ref="list"></list-view>
     <router-view></router-view>
   </div>
 </template>
@@ -8,6 +8,7 @@
 <script>
 import { getSingerList } from "api/index";
 import { getFirstLetter } from "common/js/util";
+import {playlistMixin} from 'common/js/mixin'
 import ListView from "base/listview/listview";
 import {mapMutations} from 'vuex';
 
@@ -18,6 +19,7 @@ export default {
       singerList: []
     };
   },
+  mixins: [playlistMixin],
   created() {
     getSingerList().then(res => {
       this.singerList = this._addFirstLetter(res.artists);
@@ -28,6 +30,11 @@ export default {
     ListView
   },
   methods: {
+    handlePlaylist(playlist){
+      const bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.singer.style.bottom = bottom
+      this.$refs.list.refresh()
+    },
     selectSinger(singer){
       this.$router.push({
         path: '/singer/' + singer.id

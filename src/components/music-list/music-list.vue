@@ -29,6 +29,7 @@
     import Scroll from 'base/scroll/scroll'
     import SongList from 'base/song-list/song-list'
     import Loading from 'base/loading/loading'
+    import {playlistMixin} from 'common/js/mixin'
     import {prefixStyle} from 'common/js/dom'
     import {mapActions} from 'vuex'
     
@@ -54,6 +55,7 @@
             scrollY: 0
           }
         },
+        mixins: [playlistMixin],
         computed: {
             bgStyle(){
                 return `background-image: url(${this.bgImage});`;
@@ -100,6 +102,11 @@
             Loading
         },
         methods: {
+          handlePlaylist(playlist){
+            const bottom = playlist.length > 0 ? '60px' : ''
+            this.$refs.list.$el.style.bottom = bottom
+            this.$refs.list.refresh()
+          },
           scroll(pos){
             this.scrollY = pos.y
           },
@@ -144,7 +151,7 @@
         display: block
         padding: 10px
         font-size: $font-size-large-x
-        color: $color-white
+        color: $color-theme
     .title
       position: absolute
       top: 0

@@ -1,5 +1,5 @@
 <template>
-  <div class="recommend">
+  <div class="recommend" ref="recommend">
     <scroll ref="scroll" class="recommend-content" :data="recommendSongList">
       <div>
         <div v-if="bannerList.length" class="slider-wrapper">
@@ -39,6 +39,7 @@ import { getBanner, getRecommendSongList } from "api/index";
 import Loading from "base/loading/loading";
 import Scroll from "base/scroll/scroll";
 import Slider from "base/slider/slider";
+import {playlistMixin} from 'common/js/mixin'
 
 export default {
   name: "Recommend",
@@ -48,6 +49,7 @@ export default {
       recommendSongList: []
     };
   },
+  mixins: [playlistMixin],
   created() {
     getBanner().then(res => {
       this.bannerList = res;
@@ -57,6 +59,11 @@ export default {
     });
   },
   methods: {
+    handlePlaylist(playlist){
+      const bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.recommend.style.bottom = bottom
+      this.$refs.scroll.refresh()
+    },
     _loadImg() {
       if (!this.checkLoaded) {
         this.$refs.scroll.refresh();

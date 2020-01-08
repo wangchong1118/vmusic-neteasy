@@ -116,6 +116,9 @@ export default {
       let curTouchIndex = parseInt(this.touch.curTouchIndex) + delta;
       this.$refs.listview.scrollToElement(this.$refs.listGroup[curTouchIndex], 0);
     },
+    refresh(){
+      this.$refs.listview.refresh()
+    },
     scroll(pos){
       this.scrollY = pos.y;
     },
@@ -138,7 +141,6 @@ export default {
 };
 </script>
 
-
 <style scoped lang="stylus" rel="stylesheet/stylus">
 @import '~common/stylus/variable';
 
@@ -157,8 +159,8 @@ export default {
             line-height: 30px;
             padding-left: 20px;
             font-size: $font-size-small;
-            color: $color-text-l;
-            background: $color-highlight-background;
+            color: $color-theme;
+            background: $color-background-body;
         }
 
         .list-group-item {
@@ -216,8 +218,8 @@ export default {
             line-height: 30px;
             padding-left: 20px;
             font-size: $font-size-small;
-            color: $color-text-l;
-            background: $color-highlight-background;
+            color: $color-theme;
+            background: $color-background-body;
         }
     }
 
