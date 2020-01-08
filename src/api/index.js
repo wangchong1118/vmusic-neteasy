@@ -23,6 +23,16 @@ export function getRecommendSongList() {
   })
 }
 
+// 获取歌单详情接口函数
+export function getDiscSongList(discId) {
+  const url = "/api/playlist/detail?id=" + discId;
+  return axios.get(url).then(res => {
+    if (res.status == ERR_OK && res.data.code == ERR_OK) {
+      return res.data.playlist;
+    }
+  })
+}
+
 // 获取歌手页歌手列表接口函数
 export function getSingerList() {
   const url = "/api/top/artists?limit=100";
