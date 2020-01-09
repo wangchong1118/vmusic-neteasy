@@ -72,3 +72,13 @@ export function getSongLyric(songId) {
     }
   })
 }
+
+// 获取歌单排行列表接口函数
+export function getRankList() {
+  const url = "/api/toplist/detail";
+  return axios.get(url).then(res => {
+    if (res.status == ERR_OK && res.data.code == ERR_OK) {
+      return res.data.list;
+    }
+  })
+}

@@ -19,6 +19,9 @@ const mutations = {
     [types.SET_SEQUENCE_LIST](state, list) {
       state.sequenceList = Object.assign([], list);
     },
+    [types.SET_TOPLIST](state, toplist) {
+      state.toplist = Object.assign([], toplist);
+    },
     [types.SET_PLAY_MODE](state, mode) {
       state.mode = mode;
     },
