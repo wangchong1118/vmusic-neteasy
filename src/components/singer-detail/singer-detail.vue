@@ -17,20 +17,26 @@
             }
         },
         computed: {
+            singerId(){
+                return this.singer.id
+            },
             ...mapGetters([
                 'singer'
             ])
         },
         created(){
-            if(!this.singer.id){
+            if(!this.singerId){
                 this.$router.push('/singer');
                 return;
             };
-            getSingerInfo(this.singer.id).then(res => {
-                this.songs = this._formatSongs(res.hotSongs);
-            })
+            this._getSingerInfo()
         },
         methods: {
+            _getSingerInfo(){
+                getSingerInfo(this.singerId).then(res => {
+                    this.songs = this._formatSongs(res.hotSongs);
+                })
+            },
             _formatSongs(list){
                 let res = [];
                 list.forEach(item => {
@@ -40,6 +46,11 @@
                     })
                 })
                 return res;
+            }
+        },
+        watch: {
+            singerId(){
+                this._getSingerInfo()
             }
         },
         components: {

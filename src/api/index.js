@@ -63,6 +63,16 @@ export function getSongInfo(songId) {
   })
 }
 
+// 获取歌曲完整版详情接口函数
+export function getSongDetail(songId) {
+  const url = "/api/song/detail?ids=" + songId;
+  return axios.get(url).then(res => {
+    if (res.status == ERR_OK && res.data.code == ERR_OK) {
+      return res.data;
+    }
+  })
+}
+
 // 获取歌曲歌词接口函数
 export function getSongLyric(songId) {
   const url = "/api/lyric?id=" + songId;
@@ -79,6 +89,26 @@ export function getRankList() {
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data.list;
+    }
+  })
+}
+
+// 获取搜索热门关键词接口函数
+export function getSearchHotkeyList() {
+  const url = "/api/search/hot";
+  return axios.get(url).then(res => {
+    if (res.status == ERR_OK && res.data.code == ERR_OK) {
+      return res.data.result;
+    }
+  })
+}
+
+// 获取搜索热门关键词接口函数
+export function getSearchInfo(kw, page=1, type=1) {
+  const url = "/api/search?keywords=" + kw + "&offset=" + (page-1)  + "&type=" + type + "&limit=100";
+  return axios.get(url).then(res => {
+    if (res.status == ERR_OK && res.data.code == ERR_OK) {
+      return res.data.result;
     }
   })
 }
