@@ -11,11 +11,11 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': {
+      '/api-nec': {
         target: 'http://wangchonghaha.cn:3498',
         changeOrigin: true,
         pathRewrite: {
-          '^/api': ''
+          '^/api-nec': ''
         }
       }
     },
@@ -51,7 +51,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+	assetsPublicPath: '/vue/vmusic-nec/',
 
     /**
      * Source Maps

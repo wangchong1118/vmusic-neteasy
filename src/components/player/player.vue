@@ -497,7 +497,7 @@
               width: 100%
               height: 100%
               box-sizing: border-box
-              border: 10px solid rgba(255, 255, 255, 0.5)
+              border: 6px solid rgba(255, 255, 255, 0.7)
               border-radius: 50%
               &.play
                 animation: rotate 20s linear infinite
@@ -510,7 +510,6 @@
                 width: 100%
                 height: 100%
                 border-radius: 50%
-                transform: scale(0.97)
 
           .playing-lyric-wrapper
             width: 80%

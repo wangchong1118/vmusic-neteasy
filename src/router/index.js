@@ -13,6 +13,7 @@ Vue.use(Router)
 
 export default new Router({
   mode: 'history',
+  base: '/vue/vmusic-nec/',
   routes: [
     {
       path: '/recommend',

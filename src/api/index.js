@@ -5,7 +5,7 @@ import axios from "axios"
 
 // 获取推荐页 banner 焦点图接口函数
 export function getBanner() {
-  const url = "/api/banner";
+  const url = "/api-nec/banner";
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data.banners;
@@ -15,7 +15,7 @@ export function getBanner() {
 
 // 获取推荐页歌单列表接口函数
 export function getRecommendSongList() {
-  const url = "/api/personalized?limit=10";
+  const url = "/api-nec/personalized?limit=10";
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data.result;
@@ -25,7 +25,7 @@ export function getRecommendSongList() {
 
 // 获取歌单详情接口函数
 export function getDiscSongList(discId) {
-  const url = "/api/playlist/detail?id=" + discId;
+  const url = "/api-nec/playlist/detail?id=" + discId;
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data.playlist;
@@ -35,7 +35,7 @@ export function getDiscSongList(discId) {
 
 // 获取歌手页歌手列表接口函数
 export function getSingerList() {
-  const url = "/api/top/artists?limit=100";
+  const url = "/api-nec/top/artists?limit=100";
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data;
@@ -45,7 +45,7 @@ export function getSingerList() {
 
 // 获取歌手详情接口函数
 export function getSingerInfo(singerId) {
-  const url = "/api/artists?id=" + singerId;
+  const url = "/api-nec/artists?id=" + singerId;
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data;
@@ -55,7 +55,7 @@ export function getSingerInfo(singerId) {
 
 // 获取歌曲详情接口函数
 export function getSongInfo(songId) {
-  const url = "/api/song/url?id=" + songId;
+  const url = "/api-nec/song/url?id=" + songId;
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data;
@@ -65,7 +65,7 @@ export function getSongInfo(songId) {
 
 // 获取歌曲完整版详情接口函数
 export function getSongDetail(songId) {
-  const url = "/api/song/detail?ids=" + songId;
+  const url = "/api-nec/song/detail?ids=" + songId;
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data;
@@ -75,7 +75,7 @@ export function getSongDetail(songId) {
 
 // 获取歌曲歌词接口函数
 export function getSongLyric(songId) {
-  const url = "/api/lyric?id=" + songId;
+  const url = "/api-nec/lyric?id=" + songId;
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data;
@@ -85,7 +85,7 @@ export function getSongLyric(songId) {
 
 // 获取歌单排行列表接口函数
 export function getRankList() {
-  const url = "/api/toplist/detail";
+  const url = "/api-nec/toplist/detail";
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data.list;
@@ -95,7 +95,7 @@ export function getRankList() {
 
 // 获取搜索热门关键词接口函数
 export function getSearchHotkeyList() {
-  const url = "/api/search/hot";
+  const url = "/api-nec/search/hot";
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data.result;
@@ -105,7 +105,7 @@ export function getSearchHotkeyList() {
 
 // 获取搜索热门关键词接口函数
 export function getSearchInfo(kw, page=1, type=1) {
-  const url = "/api/search?keywords=" + kw + "&offset=" + (page-1)  + "&type=" + type + "&limit=100";
+  const url = "/api-nec/search?keywords=" + kw + "&offset=" + (page-1)  + "&type=" + type + "&limit=100";
   return axios.get(url).then(res => {
     if (res.status == ERR_OK && res.data.code == ERR_OK) {
       return res.data.result;
